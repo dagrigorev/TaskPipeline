@@ -1,1 +1,1 @@
-﻿h3 Task pipeline implementations
+﻿Pipeline implementation for C# tasks
