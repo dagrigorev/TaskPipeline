@@ -2,25 +2,24 @@
 {
     using System;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
+    using Pipeline;
     using Pipeline.Queue;
 
-    /// <summary>
-    /// Simple pipeline for executinq incoming tasks in queue
-    /// </summary>
-    public class SimplePipeline : IDisposable
+    public class TypedPipeline : IDisposable
     {
         /// <summary>
         /// Tasks queue
         /// </summary>
-        ITaskQueue _tasks;
+        IDictionary<SignatureKey, ITaskQueue> _tasks;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public SimplePipeline()
+        public TypedPipeline()
         {
             // TODO: Initialize class by default
-            _tasks = new TasksQueue();
+            _tasks = new Dictionary<SignatureKey, ITaskQueue>();
         }
 
         /// <summary>
@@ -29,13 +28,14 @@
         /// <param name="args">Task arguments</param>
         public void Execute<R>(Func<object[], R> method, params object[] args)
         {
-            _tasks.WaitAll();
-            _tasks.PushTask(new Task<R>(() =>
+            var queue = _tasks[SignatureKey.GetSignature(method)];
+            queue.WaitAll();
+            queue.PushTask(new Task<R>(() =>
             {
                 return method.Invoke(args);
             }));
 
-            _tasks.RunAll();
+            queue.RunAll();
         }
 
         /// <summary>
@@ -44,13 +44,14 @@
         /// <param name="args">Task arguments</param>
         public void Execute(Action<object[]> method, params object[] args)
         {
-            _tasks.WaitAll();
-            _tasks.PushTask(new Task(() =>
+            var queue = _tasks[SignatureKey.GetSignature(method)];
+            queue.WaitAll();
+            queue.PushTask(new Task(() =>
             {
                 method.Invoke(args);
             }));
 
-            _tasks.RunAll();
+            queue.RunAll();
         }
 
         /// <summary>
@@ -58,18 +59,22 @@
         /// </summary>
         public void Execute(Action method)
         {
-            _tasks.WaitAll();
-            _tasks.PushTask(new Task(() =>
+            var queue = _tasks[SignatureKey.GetSignature(method)];
+            queue.WaitAll();
+            queue.PushTask(new Task(() =>
             {
                 method.Invoke();
             }));
 
-            _tasks.RunAll();
+            queue.RunAll();
         }
 
         public void Dispose()
         {
-            _tasks.Dispose();
+            // TODO: Check this
+            foreach (var value in _tasks.Values)
+                value.Dispose();
+            _tasks.Clear();
         }
     }
 }
