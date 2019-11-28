@@ -30,6 +30,11 @@
             _params = param;
         }
 
+        public static SignatureKey GetSignature(Delegate func)
+        {
+            return new SignatureKey(func.Method.ReturnType, func.Method.GetParameters());
+        }
+
         public static SignatureKey GetSignature<T>(Func<T> func)
         {
             return new SignatureKey(typeof(T), null);
@@ -37,7 +42,12 @@
 
         public static SignatureKey GetSignature<T, TResult>(Func<T, TResult> func)
         {
-            return new SignatureKey(typeof(T), func.GetMethodInfo().GetParameters());
+            return new SignatureKey(typeof(TResult), func.GetMethodInfo().GetParameters());
+        }
+
+        public static SignatureKey GetSignature<T1, T2, TResult>(Func<T1, T2, TResult> func)
+        {
+            return new SignatureKey(typeof(TResult), func.GetMethodInfo().GetParameters());
         }
 
         public static SignatureKey GetSignature(Action func)
@@ -46,6 +56,16 @@
         }
 
         public static SignatureKey GetSignature<T>(Action<T> func)
+        {
+            return new SignatureKey(typeof(void), func.GetMethodInfo().GetParameters());
+        }
+
+        public static SignatureKey GetSignature<T1, T2>(Action<T1, T2> func)
+        {
+            return new SignatureKey(typeof(void), func.GetMethodInfo().GetParameters());
+        }
+
+        public static SignatureKey GetSignature<T1, T2, T3>(Action<T1, T2, T3> func)
         {
             return new SignatureKey(typeof(void), func.GetMethodInfo().GetParameters());
         }
