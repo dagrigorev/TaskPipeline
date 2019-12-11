@@ -5,7 +5,7 @@
     using System.Reflection;
 
     /// <summary>
-    /// Funaction signature for using as a key in dictionary
+    /// Function signature for using as a key in dictionary
     /// </summary>
     public class SignatureKey
     {
