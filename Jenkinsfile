@@ -1,11 +1,12 @@
 node {
 	stage 'Checkout'
-		checkout scm
+	    checkout scm
 
 	stage 'Build'
-		bat "\"${tool 'MSBuild'}\" TaskPipeline.sln /p:Configuration=Release /p:Platform=\"Any CPU\" /p:ProductVersion=1.0.0.${env.BUILD_NUMBER}"
+	    bat "\"dotnet\" restore \"${workspace}/TaskPipeline.sln\""
+	    bat "\"dotnet\" build \"${workspace}/TaskPipeline.sln\""
 
-	stage 'Archive'
-		archive 'TaskPipeline/bin/Release/**'
-
+	stage 'UnitTests'
+	    bat returnStatus: true, script: "\"dotnet\" test \"${workspace}/TaskPipeline.sln\" --logger \"trx;LogFileName=unit_tests.xml\" --no-build"
+	    step([$class: 'MSTestPublisher', testResultsFile:"**/unit_tests.xml", failOnError: true, keepLongStdio: true])
 }
