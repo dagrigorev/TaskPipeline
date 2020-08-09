@@ -1,5 +1,6 @@
 ﻿using System;
 using Pipeline;
+using Pipeline.Default;
 
 namespace TestPipeline
 {
@@ -11,16 +12,25 @@ namespace TestPipeline
         /// <returns></returns>
         public static IPipelineItemExecutionExpression CreateNewExpression()
         {
-            throw new NotImplementedException();
+            return new PipeItemExecutionPredicate(() => true);
         }
 
+        /// <summary>
+        /// Creates new execution expression.
+        /// </summary>
+        /// <returns></returns>
+        public static IPipelineItemExecutionExpression CreateNewExpression(Func<object[],bool> argsPredicate)
+        {
+            return new PipeItemExecutionPredicate(argsPredicate);
+        }
+        
         /// <summary>
         /// Creates new pipeline.
         /// </summary>
         /// <returns></returns>
         public static IPipelineBase CreateNewPipeline()
         {
-            throw new NotImplementedException();
+            return new SequentialPipeline();
         }
 
         /// <summary>
@@ -30,7 +40,7 @@ namespace TestPipeline
         /// <exception cref="NotImplementedException"></exception>
         public static IPipelineItem CreateNewPipeItem()
         {
-            throw new NotImplementedException();
+            return new PiplineEmptyItem();
         }
 
         /// <summary>
@@ -39,7 +49,7 @@ namespace TestPipeline
         /// <returns></returns>
         public static IPipelineItem CreateErrorItem()
         {
-            throw new NotImplementedException();
+            return new PipelineDelegateItem(() => throw new Exception("Test exception"));
         }
         
         /// <summary>
@@ -50,7 +60,18 @@ namespace TestPipeline
         /// <exception cref="NotImplementedException"></exception>
         public static IPipelineItem CreateDelegateItem(Action action)
         {
-            throw new NotImplementedException();
+            return new PipelineDelegateItem(action);
+        }
+        
+        /// <summary>
+        /// Creates new item that executes action.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static IPipelineItem CreateDelegateItem(Action<object[]> action)
+        {
+            return new PipelineDelegateItem(action);
         }
     }
 }

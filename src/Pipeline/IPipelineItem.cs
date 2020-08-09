@@ -18,5 +18,11 @@ namespace Pipeline
         /// Executes item.
         /// </summary>
         void Execute();
+
+        /// <summary>
+        /// Executes pipeline item with args.
+        /// </summary>
+        /// <param name="args">Args</param>
+        void Execute(object[] args);
     }
 }

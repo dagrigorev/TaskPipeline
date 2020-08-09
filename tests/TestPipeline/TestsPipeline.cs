@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Pipeline;
 
@@ -33,7 +34,17 @@ namespace TestPipeline
         [Test]
         public void TestArgsItemPipelineExecuting()
         {
-            throw new NotImplementedException();
+            var testCounter = 0;
+            var newPipelineItem = PipelineFactory.CreateDelegateItem(args =>
+            {
+                if (args.Length > 0)
+                    testCounter++;
+            });
+            var newPipeline = PipelineFactory.CreateNewPipeline();
+            newPipeline.Register(PipelineFactory.CreateNewExpression(args => args.Length > 0), newPipelineItem);
+            newPipeline.Execute(1, 2, 3, 4);
+            
+            Assert.IsTrue(testCounter > 0);
         }
         
         [Test]
@@ -47,7 +58,7 @@ namespace TestPipeline
                 var newItem = PipelineFactory.CreateNewPipeItem();
                 var newExpr = PipelineFactory.CreateNewExpression();
 
-                if(newExpr.CanExecute()) 
+                if(!newExpr.CanExecute()) 
                     throw new InvalidOperationException("Execution expression must be valid");
                 
                 newItem.WhenSuccess(() => testCounter++);
@@ -64,7 +75,7 @@ namespace TestPipeline
         {
             var testCounter = 0;
             var newPipeline = PipelineFactory.CreateNewPipeline();
-            var newItem = PipelineFactory.CreateNewPipeItem();
+            var newItem = PipelineFactory.CreateErrorItem();
             var newExpr = PipelineFactory.CreateNewExpression();
             
             newItem.WhenError(ex => testCounter++);

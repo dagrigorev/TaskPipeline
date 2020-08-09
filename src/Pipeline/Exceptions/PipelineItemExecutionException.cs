@@ -11,5 +11,18 @@ namespace Pipeline.Exceptions
         /// Pipeline item id.
         /// </summary>
         public Guid Id { get; set; }
+
+        public PipelineItemExecutionException()
+        {
+        }
+
+        public PipelineItemExecutionException(Exception ex)
+            :base(ex.Message, ex.InnerException)
+        {
+            if (ex is PipelineItemExecutionException pex)
+            {
+                Id = pex.Id;
+            }
+        }
     }
 }
