@@ -2,6 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>dagrigorev</Authors>
+        <RepositoryUrl>https://github.com/dagrigorev/TaskPipeline.git</RepositoryUrl>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
+        <PackageId>TasksPipeline.Abstractions</PackageId>
     </PropertyGroup>
 
 </Project>

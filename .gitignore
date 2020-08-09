@@ -3,6 +3,8 @@ obj/
 .vscode/
 .vs/
 .idea/
+Debug/
+Release/
 
 *.dll
 *.exe
