@@ -2,3 +2,9 @@
 obj/
 .vscode/
 .vs/
+.idea/
+
+*.dll
+*.exe
+*.obj
+*.generated.cs
