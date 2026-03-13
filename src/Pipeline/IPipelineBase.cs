@@ -1,27 +1,14 @@
-﻿using System;
 using Pipeline.InnerContracts;
 
-namespace Pipeline
+namespace Pipeline;
+
+/// <summary>
+/// Legacy non-generic pipeline contract retained for backward compatibility.
+/// Prefer <see cref="IPipeline{TContext}"/> for new code.
+/// </summary>
+public interface IPipelineBase : IRegistrable
 {
-    /// <summary>
-    /// Base pipeline contract.
-    /// </summary>
-    public interface IPipelineBase : IRegistrable
-    {
-        /// <summary>
-        /// Gets registered items count.
-        /// </summary>
-        int Count { get; }
-        
-        /// <summary>
-        /// Executes pipeline with no args.
-        /// </summary>
-        void Execute();
-        
-        /// <summary>
-        /// Executes pipeline with args.
-        /// </summary>
-        /// <param name="args"></param>
-        void Execute(params object[] args);
-    }
+    int Count { get; }
+    void Execute();
+    void Execute(params object[] args);
 }

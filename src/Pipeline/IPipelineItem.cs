@@ -1,28 +1,14 @@
-﻿using System;
-using Pipeline.Exceptions;
 using Pipeline.InnerContracts;
 
-namespace Pipeline
+namespace Pipeline;
+
+/// <summary>
+/// Legacy pipeline item contract retained for backward compatibility.
+/// Prefer <see cref="IPipelineStep{TContext}"/> for new code.
+/// </summary>
+public interface IPipelineItem : IPostActionable
 {
-    /// <summary>
-    /// Pipeline item contract.
-    /// </summary>
-    public interface IPipelineItem : IPostActionable
-    {
-        /// <summary>
-        /// Pipeline item id.
-        /// </summary>
-        Guid Id { get; }
-
-        /// <summary>
-        /// Executes item.
-        /// </summary>
-        void Execute();
-
-        /// <summary>
-        /// Executes pipeline item with args.
-        /// </summary>
-        /// <param name="args">Args</param>
-        void Execute(object[] args);
-    }
+    Guid Id { get; }
+    void Execute();
+    void Execute(object[] args);
 }

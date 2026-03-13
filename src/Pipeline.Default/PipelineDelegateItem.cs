@@ -1,98 +1,117 @@
-﻿using System;
 using Pipeline.Exceptions;
 
-namespace Pipeline.Default
+namespace Pipeline.Default;
+
+/// <summary>
+/// Legacy delegate-backed item retained for backward compatibility.
+/// </summary>
+public sealed class PipelineDelegateItem : IPipelineItem
 {
-    /// <summary>
-    /// Delegate item implementation.
-    /// </summary>
-    public class PipelineDelegateItem : IPipelineItem
+    private readonly Action? _delegateItem;
+    private readonly Action<object[]>? _delegateArgsItem;
+    private readonly List<Action> _continueActions = new();
+    private readonly List<Action> _successActions = new();
+    private readonly List<Action<PipelineItemExecutionException>> _errorActions = new();
+
+    public PipelineDelegateItem(Action action)
     {
-        private Action _continueAction;
-        private Action<PipelineItemExecutionException> _errorAction;
-        private Action _successAction;
-        private Action _delegateItem;
-        private Action<object[]> _delegateArgsItem;
-        private Exception _ex;
-        
-        public Guid Id { get; }
+        _delegateItem = action ?? throw new ArgumentNullException(nameof(action));
+        Id = Guid.NewGuid();
+    }
 
-        private PipelineDelegateItem()
-        {
-            Id = Guid.NewGuid();    
-        }
+    public PipelineDelegateItem(Action<object[]> action)
+    {
+        _delegateArgsItem = action ?? throw new ArgumentNullException(nameof(action));
+        Id = Guid.NewGuid();
+    }
 
-        /// <summary>
-        /// Initializes new pipeline item.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <exception cref="ArgumentNullException">When action is null.</exception>
-        public PipelineDelegateItem(Action action)
-            :base()
-        {
-            if (action == null)
-                throw new ArgumentNullException("Delegate cannot be null");
-            
-            _delegateItem = action;
-        }
-        
-        /// <summary>
-        /// Initializes new pipeline item.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <exception cref="ArgumentNullException">When action is null.</exception>
-        public PipelineDelegateItem(Action<object[]> action)
-            :base()
-        {
-            if (action == null)
-                throw new ArgumentNullException("Delegate cannot be null");
-            
-            _delegateArgsItem = action;
-        }
-        
-        public void ContinueWith(Action action)
-        {
-            _continueAction = action;
-        }
+    public Guid Id { get; }
 
-        public void WhenSuccess(Action action)
-        {
-            _successAction = action;
-        }
+    public void ContinueWith(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        _continueActions.Add(action);
+    }
 
-        public void WhenError(Action<PipelineItemExecutionException> action)
-        {
-            _errorAction = action;
-        }
+    public void WhenSuccess(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        _successActions.Add(action);
+    }
 
-        public void Execute()
+    public void WhenError(Action<PipelineItemExecutionException> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        _errorActions.Add(action);
+    }
+
+    public void Execute()
+    {
+        try
         {
-            try
-            {     
+            if (_delegateItem is not null)
+            {
+                _delegateItem();
+            }
+            else
+            {
+                _delegateArgsItem?.Invoke(Array.Empty<object>());
+            }
+
+            foreach (var action in _successActions)
+            {
+                action();
+            }
+        }
+        catch (Exception ex)
+        {
+            var wrapped = PipelineItemExecutionException.Wrap(ex, Id, nameof(PipelineDelegateItem));
+            foreach (var action in _errorActions)
+            {
+                action(wrapped);
+            }
+        }
+        finally
+        {
+            foreach (var action in _continueActions)
+            {
+                action();
+            }
+        }
+    }
+
+    public void Execute(object[] args)
+    {
+        try
+        {
+            if (_delegateArgsItem is not null)
+            {
+                _delegateArgsItem(args ?? Array.Empty<object>());
+            }
+            else
+            {
                 _delegateItem?.Invoke();
-                _successAction?.Invoke();
             }
-            catch (Exception ex)
+
+            foreach (var action in _successActions)
             {
-                _errorAction?.Invoke(new PipelineItemExecutionException(ex));
+                action();
             }
-            
-            _continueAction?.Invoke();
         }
-        
-        public void Execute(object[] args)
+        catch (Exception ex)
         {
-            try
+            var wrapped = PipelineItemExecutionException.Wrap(ex, Id, nameof(PipelineDelegateItem));
+            foreach (var action in _errorActions)
             {
-                _delegateArgsItem.Invoke(args);
-                _successAction?.Invoke();
+                action(wrapped);
             }
-            catch (Exception ex)
+        }
+        finally
+        {
+            foreach (var action in _continueActions)
             {
-                _errorAction?.Invoke(new PipelineItemExecutionException(ex));
+                action();
             }
-            
-            _continueAction?.Invoke();
         }
     }
 }

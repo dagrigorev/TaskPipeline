@@ -1,46 +1,51 @@
-﻿using System;
 using Pipeline.Exceptions;
 
-namespace Pipeline.Default
+namespace Pipeline.Default;
+
+/// <summary>
+/// Legacy empty item implementation retained for backward compatibility.
+/// </summary>
+public sealed class PiplineEmptyItem : IPipelineItem
 {
-    /// <summary>
-    /// Empty item implementation.
-    /// </summary>
-    public class PiplineEmptyItem : IPipelineItem
+    private readonly List<Action> _continueActions = new();
+    private readonly List<Action> _successActions = new();
+
+    public PiplineEmptyItem()
     {
-        private Action _continueAction;
-        private Action _successAction;
-        
-        public Guid Id { get; }
+        Id = Guid.NewGuid();
+    }
 
-        public PiplineEmptyItem()
+    public Guid Id { get; }
+
+    public void ContinueWith(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        _continueActions.Add(action);
+    }
+
+    public void WhenSuccess(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        _successActions.Add(action);
+    }
+
+    public void WhenError(Action<PipelineItemExecutionException> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+    }
+
+    public void Execute()
+    {
+        foreach (var action in _successActions)
         {
-            Id = Guid.NewGuid();    
-        }
-        
-        public void ContinueWith(Action action)
-        {
-            _continueAction = action;
+            action();
         }
 
-        public void WhenSuccess(Action action)
+        foreach (var action in _continueActions)
         {
-            _successAction = action;
-        }
-
-        public void WhenError(Action<PipelineItemExecutionException> action)
-        {
-        }
-        
-        public void Execute()
-        {
-            _successAction?.Invoke();
-            _continueAction?.Invoke();
-        }
-
-        public void Execute(object[] args)
-        {
-            Execute();
+            action();
         }
     }
+
+    public void Execute(object[] args) => Execute();
 }

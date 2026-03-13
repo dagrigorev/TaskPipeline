@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>TaskPipeline</AssemblyName>
+    <RootNamespace>TaskPipeline</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../TaskPipeline.Abstractions/TaskPipeline.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

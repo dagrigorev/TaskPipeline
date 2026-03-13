@@ -1,0 +1,10 @@
+feat: rewrite TaskPipeline as modern cross-platform v2
+
+- migrate library to net8.0 with optional netstandard2.1 support
+- introduce typed async pipeline abstractions and fluent builder
+- add cancellation support and structured execution results
+- replace dictionary-based execution model with ordered step descriptors
+- improve exception handling with step metadata preservation
+- keep legacy pipeline contracts and implementations for compatibility
+- refresh NUnit test suite for both legacy and modern APIs
+- update README with new architecture and roadmap
