@@ -2,6 +2,15 @@
   <PropertyGroup>
     <AssemblyName>TaskPipeline</AssemblyName>
     <RootNamespace>TaskPipeline</RootNamespace>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>TaskPipeline</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Dmitry Grigorev</Authors>
+    <Description>Modern strongly-typed pipeline orchestration library for .NET 8+</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/dagrigorev/TaskPipeline</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>pipeline orchestration task workflow dotnet</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../TaskPipeline.Abstractions/TaskPipeline.Abstractions.csproj" />
