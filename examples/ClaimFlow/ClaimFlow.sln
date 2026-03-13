@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimFlow.Web", "src\ClaimFlow.Web\ClaimFlow.Web.csproj", "{7A1C0EA2-5E40-4D04-87F5-39F8B44F0101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClaimFlow.Web.Tests", "tests\ClaimFlow.Web.Tests\ClaimFlow.Web.Tests.csproj", "{3DA3871D-3D8E-4FE1-9E50-A85D4CB95E56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A1C0EA2-5E40-4D04-87F5-39F8B44F0101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A1C0EA2-5E40-4D04-87F5-39F8B44F0101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A1C0EA2-5E40-4D04-87F5-39F8B44F0101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A1C0EA2-5E40-4D04-87F5-39F8B44F0101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DA3871D-3D8E-4FE1-9E50-A85D4CB95E56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DA3871D-3D8E-4FE1-9E50-A85D4CB95E56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DA3871D-3D8E-4FE1-9E50-A85D4CB95E56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DA3871D-3D8E-4FE1-9E50-A85D4CB95E56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

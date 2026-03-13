@@ -17,6 +17,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/TaskPipeline/TaskPipeline.csproj" />
-    <ProjectReference Include="../../src/TaskPipeline.Abstractions/TaskPipeline.Abstractions.csproj" />
   </ItemGroup>
 </Project>

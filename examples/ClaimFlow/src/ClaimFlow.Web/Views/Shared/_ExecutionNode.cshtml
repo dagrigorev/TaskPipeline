@@ -1,0 +1,58 @@
+@model ClaimFlow.Web.Pipeline.ExecutionNodeSummary
+
+<div class="execution-node">
+    <div class="execution-card">
+        <div class="d-flex justify-content-between gap-3 flex-wrap align-items-start">
+            <div>
+                <div class="fw-semibold mb-1">@Model.Name</div>
+                <div class="execution-type">@Model.Type</div>
+            </div>
+            <div class="text-end">
+                <div><span class="status-pill @NodeStatusClass(Model.Status)">@Model.Status</span></div>
+                <div class="table-subtitle mt-2">@Model.DurationMs.ToString("0") ms</div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Exception))
+        {
+            <div class="app-error-box mt-3">@Model.Exception</div>
+        }
+
+        @if (Model.Metadata.Count > 0)
+        {
+            <div class="metadata-block mt-3">
+                <div class="fw-semibold mb-2">Metadata</div>
+                <div class="metadata-grid">
+                    @foreach (var pair in Model.Metadata)
+                    {
+                        <div class="metadata-item">
+                            <span>@pair.Key</span>
+                            <strong>@pair.Value</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Children.Count > 0)
+    {
+        <div class="execution-children">
+            @foreach (var child in Model.Children)
+            {
+                <partial name="_ExecutionNode" model="child" />
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private static string NodeStatusClass(string? status) => status?.ToLowerInvariant() switch
+    {
+        "success" => "status-success",
+        "failed" => "status-danger",
+        "cancelled" => "status-neutral",
+        "skipped" => "status-neutral",
+        _ => "status-warning"
+    };
+}

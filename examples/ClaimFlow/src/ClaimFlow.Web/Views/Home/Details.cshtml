@@ -1,0 +1,107 @@
+@model ClaimDetailsViewModel
+@{
+    ViewData["Title"] = "Claim Details";
+}
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+        <div class="section-kicker">Claim details</div>
+        <h1 class="section-title mb-1">@Model.Claim.CustomerName</h1>
+        <div class="text-muted">@Model.Claim.Id</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <span class="soft-badge">@Model.Claim.ClaimType</span>
+        <span class="status-pill @StatusClass(Model.Claim.Status)">@Model.Claim.Status</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="panel h-100">
+            <div class="panel-body p-4">
+                <div class="section-kicker">Overview</div>
+                <h2 class="section-title h5 mb-4">Decision summary</h2>
+                <dl class="detail-list mb-0">
+                    <div><dt>Customer</dt><dd>@Model.Claim.CustomerName</dd></div>
+                    <div><dt>Email</dt><dd>@Model.Claim.CustomerEmail</dd></div>
+                    <div><dt>Policy</dt><dd>@Model.Claim.PolicyNumber</dd></div>
+                    <div><dt>Decision</dt><dd>@Model.Claim.FinalDecisionType</dd></div>
+                    <div><dt>Reason</dt><dd>@Model.Claim.FinalDecisionReason</dd></div>
+                    <div><dt>Estimated</dt><dd>@Model.Claim.EstimatedDamageAmount.ToString("C")</dd></div>
+                    <div><dt>Approved</dt><dd>@Model.Claim.ApprovedPayoutAmount.ToString("C")</dd></div>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel h-100">
+            <div class="panel-body p-4">
+                <div class="section-kicker">Request</div>
+                <h2 class="section-title h5 mb-3">Incident description</h2>
+                <p class="mb-4 text-body-secondary">@Model.Claim.Description</p>
+
+                <div class="tag-grid mb-3">
+                    <span class="soft-badge">Photos: @(Model.Claim.HasPhotos ? "Yes" : "No")</span>
+                    <span class="soft-badge">Police report: @(Model.Claim.HasPoliceReport ? "Yes" : "No")</span>
+                    <span class="soft-badge">Tow truck: @(Model.Claim.RequiresTowTruck ? "Yes" : "No")</span>
+                    <span class="soft-badge">Injury: @(Model.Claim.InjuryInvolved ? "Yes" : "No")</span>
+                    <span class="soft-badge">VIP: @(Model.Claim.IsVipCustomer ? "Yes" : "No")</span>
+                </div>
+
+                @if (Model.MissingDocuments.Count > 0)
+                {
+                    <div class="app-warning-box">
+                        <div class="fw-semibold mb-2">Missing documents</div>
+                        <ul class="mb-0 ps-3">
+                            @foreach (var item in Model.MissingDocuments)
+                            {
+                                <li>@item</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ExecutionSummary is not null)
+{
+    <div class="panel mt-4">
+        <div class="panel-body p-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <div class="section-kicker">Observability</div>
+                    <h2 class="section-title h5 mb-0">Execution tree</h2>
+                </div>
+                <div class="execution-summary-meta">
+                    <span class="soft-badge">@Model.ExecutionSummary.Status</span>
+                    <span class="soft-badge">@Model.ExecutionSummary.DurationMs.ToString("0") ms</span>
+                </div>
+            </div>
+
+            @if (Model.ExecutionSummary.Root is not null)
+            {
+                <partial name="_ExecutionNode" model="Model.ExecutionSummary.Root" />
+            }
+        </div>
+    </div>
+}
+
+<div class="mt-4">
+    <a class="btn app-btn-secondary" asp-action="Index">Back to dashboard</a>
+</div>
+
+@functions {
+    private static string StatusClass(ClaimStatus status) => status switch
+    {
+        ClaimStatus.Paid => "status-success",
+        ClaimStatus.Approved => "status-success",
+        ClaimStatus.ManualReview => "status-warning",
+        ClaimStatus.WaitingForDocuments => "status-warning",
+        ClaimStatus.Rejected => "status-danger",
+        ClaimStatus.Failed => "status-danger",
+        ClaimStatus.Cancelled => "status-neutral",
+        _ => "status-neutral"
+    };
+}

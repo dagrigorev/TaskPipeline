@@ -1,0 +1,140 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="hero-surface mb-4 mb-lg-5">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-xl-8">
+            <div class="panel panel-hero h-100">
+                <div class="panel-body p-4 p-lg-5">
+                    <div class="eyebrow mb-3">TaskPipeline showcase</div>
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+                        <div class="me-xl-4">
+                            <h1 class="display-title mb-3">Insurance claim automation with a clear execution trail</h1>
+                            <p class="lead-copy mb-0">
+                                A compact ASP.NET Core demo that highlights sequential steps, conditional routing,
+                                parallel branches, merge logic, fault tolerance, and execution snapshots stored in SQLite.
+                            </p>
+                        </div>
+                        <a class="btn btn-primary app-btn-primary" asp-action="NewClaim">Create claim</a>
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Processed claims</div>
+                            <div class="metric-value">@Model.Claims.Count</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Demo policies</div>
+                            <div class="metric-value">@Model.Policies.Count</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Storage</div>
+                            <div class="metric-value">SQLite</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="panel h-100">
+                <div class="panel-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <div class="section-kicker">Reference data</div>
+                            <h2 class="section-title mb-0">Demo policies</h2>
+                        </div>
+                        <span class="soft-badge">@Model.Policies.Count items</span>
+                    </div>
+                    <div class="vstack gap-3">
+                        @foreach (var policy in Model.Policies)
+                        {
+                            <div class="policy-item">
+                                <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                                    <div class="fw-semibold">@policy.PolicyNumber</div>
+                                    <span class="soft-badge @(policy.IsActive ? "soft-badge-success" : "soft-badge-danger")">@(policy.IsActive ? "Active" : "Inactive")</span>
+                                </div>
+                                <div class="item-meta">Coverage @policy.CoverageLimit.ToString("C")</div>
+                                <div class="item-meta">Auto-pay @(policy.SupportsAutoPayment ? "enabled" : "disabled")</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-body p-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <div>
+                <div class="section-kicker">Operations</div>
+                <h2 class="section-title mb-0">Recent claims</h2>
+            </div>
+            <span class="soft-badge">@Model.Claims.Count total</span>
+        </div>
+
+        @if (Model.Claims.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">◎</div>
+                <div class="h5 mb-2">No claims yet</div>
+                <p class="text-muted mb-3">Create the first claim to see the pipeline, branching, and stored execution tree in action.</p>
+                <a class="btn btn-primary app-btn-primary" asp-action="NewClaim">Create claim</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive app-table-wrap">
+                <table class="table app-table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Policy</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Decision</th>
+                        <th>Payout</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Claims)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">@item.CustomerName</div>
+                                <div class="table-subtitle">@item.CreatedAtUtc.ToLocalTime()</div>
+                            </td>
+                            <td>@item.PolicyNumber</td>
+                            <td>@item.ClaimType</td>
+                            <td><span class="status-pill @StatusClass(item.Status)">@item.Status</span></td>
+                            <td>@item.FinalDecisionType</td>
+                            <td>@item.ApprovedPayoutAmount.ToString("C")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm app-btn-secondary" asp-action="Details" asp-route-id="@item.Id">Open</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>
+
+@functions {
+    private static string StatusClass(ClaimStatus status) => status switch
+    {
+        ClaimStatus.Paid => "status-success",
+        ClaimStatus.Approved => "status-success",
+        ClaimStatus.ManualReview => "status-warning",
+        ClaimStatus.WaitingForDocuments => "status-warning",
+        ClaimStatus.Rejected => "status-danger",
+        ClaimStatus.Failed => "status-danger",
+        ClaimStatus.Cancelled => "status-neutral",
+        _ => "status-neutral"
+    };
+}
