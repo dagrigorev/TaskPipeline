@@ -10,9 +10,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\TaskPipeline\TaskPipeline.csproj" />
+    <PackageReference Include="TaskPipeline" Version="2.0.1" />
   </ItemGroup>
 </Project>

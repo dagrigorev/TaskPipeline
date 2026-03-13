@@ -3,6 +3,7 @@ using ClaimFlow.Web.Domain;
 using ClaimFlow.Web.Models;
 using ClaimFlow.Web.Services;
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 
 namespace ClaimFlow.Web.Tests;
 
@@ -32,7 +33,7 @@ public sealed class ClaimProcessingServiceTests
 
         Assert.Equal(ClaimStatus.Paid, result.Claim.Status);
         Assert.Equal(FinalDecisionType.Approve, result.Claim.FinalDecisionType);
-        Assert.NotNull(result.ExecutionSummary.Root);
+        Assert.NotNull(result.Summary.Root);
     }
 
     [Fact]
