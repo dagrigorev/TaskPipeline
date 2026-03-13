@@ -1,0 +1,103 @@
+@model ClaimRequest
+@{
+    ViewData["Title"] = "New Claim";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xxl-10">
+        <div class="panel">
+            <div class="panel-body p-4 p-lg-5">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                    <div>
+                        <div class="section-kicker">Create claim</div>
+                        <h1 class="section-title mb-2">Submit and process a new claim</h1>
+                        <p class="text-muted mb-0">The form runs the pipeline immediately and stores both business data and execution details.</p>
+                    </div>
+                    <a class="btn app-btn-secondary" asp-action="Index">Back</a>
+                </div>
+
+                <form method="post" class="claim-form-grid">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <div class="subpanel h-100">
+                                <div class="subpanel-title">Customer and case data</div>
+                                <div class="row g-3 mt-1">
+                                    <div class="col-md-6">
+                                        <label asp-for="CustomerName" class="form-label"></label>
+                                        <input asp-for="CustomerName" class="form-control app-control" />
+                                        <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="CustomerEmail" class="form-label"></label>
+                                        <input asp-for="CustomerEmail" class="form-control app-control" />
+                                        <span asp-validation-for="CustomerEmail" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="PolicyNumber" class="form-label"></label>
+                                        <input asp-for="PolicyNumber" class="form-control app-control" />
+                                        <span asp-validation-for="PolicyNumber" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="ClaimType" class="form-label"></label>
+                                        <select asp-for="ClaimType" class="form-select app-control" asp-items="Html.GetEnumSelectList<ClaimType>()"></select>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <div class="toggle-card w-100">
+                                            <div class="form-check form-switch m-0 d-flex justify-content-between align-items-center">
+                                                <label asp-for="IsVipCustomer" class="form-check-label"></label>
+                                                <input asp-for="IsVipCustomer" class="form-check-input" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label asp-for="Description" class="form-label"></label>
+                                        <textarea asp-for="Description" rows="6" class="form-control app-control"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="subpanel h-100">
+                                <div class="subpanel-title">Checklist</div>
+                                <div class="selection-stack mt-3">
+                                    <label class="choice-card">
+                                        <input asp-for="HasPoliceReport" class="form-check-input" />
+                                        <span>Police report attached</span>
+                                    </label>
+                                    <label class="choice-card">
+                                        <input asp-for="HasPhotos" class="form-check-input" />
+                                        <span>Damage photos available</span>
+                                    </label>
+                                    <label class="choice-card">
+                                        <input asp-for="RequiresTowTruck" class="form-check-input" />
+                                        <span>Tow truck requested</span>
+                                    </label>
+                                    <label class="choice-card">
+                                        <input asp-for="InjuryInvolved" class="form-check-input" />
+                                        <span>Injury involved</span>
+                                    </label>
+                                </div>
+                                <div class="helper-note mt-4">
+                                    Tip: use one of the demo policies from the dashboard to trigger different pipeline branches.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary app-btn-primary">Submit and process</button>
+                        <a class="btn app-btn-secondary" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
