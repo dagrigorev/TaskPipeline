@@ -1,25 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>dagrigorev</Authors>
-        <PackageLicenseFile>MIT_Licence.txt</PackageLicenseFile>
-        <RepositoryUrl>https://github.com/dagrigorev/TaskPipeline.git</RepositoryUrl>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
-        <PackageId>TasksPipeline.Default</PackageId>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Pipeline\Pipeline.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="..\..\MIT_Licence.txt">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <PackageId>TaskPipeline.Default</PackageId>
+    <AssemblyName>Pipeline.Default</AssemblyName>
+    <RootNamespace>Pipeline.Default</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pipeline\Pipeline.csproj" />
+  </ItemGroup>
 </Project>

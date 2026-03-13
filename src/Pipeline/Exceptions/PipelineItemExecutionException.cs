@@ -1,28 +1,37 @@
-﻿using System;
+namespace Pipeline.Exceptions;
 
-namespace Pipeline.Exceptions
+/// <summary>
+/// Represents a failure while executing a pipeline step.
+/// </summary>
+public sealed class PipelineItemExecutionException : Exception
 {
-    /// <summary>
-    /// Pipeline item exception that raises when something wrong wrong in <see cref="IPipelineItem.Execute"/>.
-    /// </summary>
-    public class PipelineItemExecutionException : Exception
+    public Guid? Id { get; }
+    public string? StepName { get; }
+
+    public PipelineItemExecutionException()
     {
-        /// <summary>
-        /// Pipeline item id.
-        /// </summary>
-        public Guid Id { get; set; }
+    }
 
-        public PipelineItemExecutionException()
-        {
-        }
+    public PipelineItemExecutionException(string message)
+        : base(message)
+    {
+    }
 
-        public PipelineItemExecutionException(Exception ex)
-            :base(ex.Message, ex.InnerException)
-        {
-            if (ex is PipelineItemExecutionException pex)
-            {
-                Id = pex.Id;
-            }
-        }
+    public PipelineItemExecutionException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+
+    public PipelineItemExecutionException(Guid? id, string? stepName, string message, Exception innerException)
+        : base(message, innerException)
+    {
+        Id = id;
+        StepName = stepName;
+    }
+
+    public static PipelineItemExecutionException Wrap(Exception exception, Guid? id = null, string? stepName = null)
+    {
+        return exception as PipelineItemExecutionException
+               ?? new PipelineItemExecutionException(id, stepName, exception.Message, exception);
     }
 }

@@ -1,41 +1,24 @@
-﻿using System;
+namespace Pipeline.Default;
 
-namespace Pipeline.Default
+/// <summary>
+/// Legacy predicate implementation retained for backward compatibility.
+/// </summary>
+public sealed class PipeItemExecutionPredicate : IPipelineItemExecutionExpression
 {
-    /// <summary>
-    /// Simple predicate implementation.
-    /// </summary>
-    public class PipeItemExecutionPredicate : IPipelineItemExecutionExpression
+    private readonly Func<bool>? _predicate;
+    private readonly Func<object[], bool>? _argsPredicate;
+
+    public PipeItemExecutionPredicate(Func<bool> predicate)
     {
-        private Func<bool> _predicate;
-        private Func<object[], bool> _argsPredicate;
-
-        /// <summary>
-        /// Initializes new predicate without args.
-        /// </summary>
-        /// <param name="predicate"></param>
-        public PipeItemExecutionPredicate(Func<bool> predicate)
-        {
-            _predicate = predicate;
-        }
-        
-        /// <summary>
-        /// Initializes new predicate with args.
-        /// </summary>
-        /// <param name="predicate"></param>
-        public PipeItemExecutionPredicate(Func<object[], bool> predicate)
-        {
-            _argsPredicate = predicate;
-        }
-        
-        public bool CanExecute()
-        {
-            return _predicate.Invoke();
-        }
-
-        public bool CanExecute(params object[] args)
-        {
-            return _argsPredicate.Invoke(args);
-        }
+        _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
     }
+
+    public PipeItemExecutionPredicate(Func<object[], bool> predicate)
+    {
+        _argsPredicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
+    }
+
+    public bool CanExecute() => _predicate?.Invoke() ?? true;
+
+    public bool CanExecute(params object[] args) => _argsPredicate?.Invoke(args) ?? _predicate?.Invoke() ?? true;
 }

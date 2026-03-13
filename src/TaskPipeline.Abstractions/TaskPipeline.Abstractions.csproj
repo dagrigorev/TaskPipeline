@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>TaskPipeline.Abstractions</AssemblyName>
+    <RootNamespace>TaskPipeline.Abstractions</RootNamespace>
+  </PropertyGroup>
+</Project>

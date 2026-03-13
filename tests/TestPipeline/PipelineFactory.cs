@@ -1,77 +1,24 @@
-﻿using System;
 using Pipeline;
 using Pipeline.Default;
 
-namespace TestPipeline
+namespace TestPipeline;
+
+internal static class PipelineFactory
 {
-    public static class PipelineFactory
-    {
-        /// <summary>
-        /// Creates new execution expression.
-        /// </summary>
-        /// <returns></returns>
-        public static IPipelineItemExecutionExpression CreateNewExpression()
-        {
-            return new PipeItemExecutionPredicate(() => true);
-        }
+    public static SequentialPipeline CreateLegacyPipeline() => new();
 
-        /// <summary>
-        /// Creates new execution expression.
-        /// </summary>
-        /// <returns></returns>
-        public static IPipelineItemExecutionExpression CreateNewExpression(Func<object[],bool> argsPredicate)
-        {
-            return new PipeItemExecutionPredicate(argsPredicate);
-        }
-        
-        /// <summary>
-        /// Creates new pipeline.
-        /// </summary>
-        /// <returns></returns>
-        public static IPipelineBase CreateNewPipeline()
-        {
-            return new SequentialPipeline();
-        }
+    public static IPipelineItem CreateLegacyItem() => new PiplineEmptyItem();
 
-        /// <summary>
-        /// Creates new executable item.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static IPipelineItem CreateNewPipeItem()
-        {
-            return new PiplineEmptyItem();
-        }
+    public static IPipelineItem CreateDelegateItem(Action<object[]> action) => new PipelineDelegateItem(action);
 
-        /// <summary>
-        /// Creates new item that always raises exception.
-        /// </summary>
-        /// <returns></returns>
-        public static IPipelineItem CreateErrorItem()
-        {
-            return new PipelineDelegateItem(() => throw new Exception("Test exception"));
-        }
-        
-        /// <summary>
-        /// Creates new item that executes action.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static IPipelineItem CreateDelegateItem(Action action)
-        {
-            return new PipelineDelegateItem(action);
-        }
-        
-        /// <summary>
-        /// Creates new item that executes action.
-        /// </summary>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static IPipelineItem CreateDelegateItem(Action<object[]> action)
-        {
-            return new PipelineDelegateItem(action);
-        }
-    }
+    public static IPipelineItem CreateErrorItem() => new PipelineDelegateItem(_ => throw new InvalidOperationException("boom"));
+
+    public static IPipelineItemExecutionExpression CreateExpression(Func<object[], bool>? predicate = null)
+        => predicate is null ? new PipeItemExecutionPredicate(() => true) : new PipeItemExecutionPredicate(predicate);
+
+    public static object CreateNewPipeline() => CreateLegacyPipeline();
+
+    public static object CreateNewPipeItem() => CreateLegacyItem();
+
+    public static object CreateNewExpression() => CreateExpression();
 }
